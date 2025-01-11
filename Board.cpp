@@ -77,6 +77,11 @@ bool Board::movePiece(int startRow, int startCol, int endRow, int endCol) {
             grid[startRow][startCol] = "";
             return true;
         }
+        if (startRow == 6 && endRow == 7 && startCol == endCol) {
+            grid[endRow][endCol] = "white_queen";
+            grid[startRow][startCol] = "";
+            return true;
+        }
     }else if (piece == "black_pawn") {
         if (startRow == 6 && endRow == 4 && startCol == endCol && grid[5][endCol] == "" && grid[4][endCol] == "") {
             grid[endRow][endCol] = "black_pawn";
@@ -96,6 +101,11 @@ bool Board::movePiece(int startRow, int startCol, int endRow, int endCol) {
         if (startRow == 3 && endRow == 2 && (endCol == startCol + 1 || endCol == startCol - 1) && grid[3][endCol].find("white") != std::string::npos) {
             grid[endRow][endCol] = "black_pawn";
             grid[startRow][endCol] = "";
+            grid[startRow][startCol] = "";
+            return true;
+        }
+        if (startRow == 1 && endRow == 0 && startCol == endCol) {
+            grid[endRow][endCol] = "black_queen";
             grid[startRow][startCol] = "";
             return true;
         }

@@ -270,15 +270,19 @@ TEST(BoardTest, WhiteRookValidMoves) {
     Board board;
     board.initialize();
 
+    board.setPieceAt(2,2,"white_rook");
+
     // Valid move: White rook moves vertically
-    EXPECT_TRUE(board.movePiece(0, 0, 4, 0));
-    EXPECT_EQ(board.getPieceAt(4, 0), "white_rook");
-    EXPECT_EQ(board.getPieceAt(0, 0), "");
+    EXPECT_TRUE(board.movePiece(2, 2, 4, 2));
+    EXPECT_EQ(board.getPieceAt(4, 2), "white_rook");
+    EXPECT_EQ(board.getPieceAt(2, 2), "");
+
+    board.setPieceAt(2,2,"white_rook");
 
     // Valid move: White rook moves horizontally
-    EXPECT_TRUE(board.movePiece(4, 0, 4, 4));
-    EXPECT_EQ(board.getPieceAt(4, 4), "white_rook");
-    EXPECT_EQ(board.getPieceAt(4, 0), "");
+    EXPECT_TRUE(board.movePiece(2, 2, 2, 4));
+    EXPECT_EQ(board.getPieceAt(2, 4), "white_rook");
+    EXPECT_EQ(board.getPieceAt(2, 2), "");
 }
 
 // Test white rook invalid moves
@@ -291,6 +295,12 @@ TEST(BoardTest, WhiteRookInvalidMoves) {
 
     // Invalid move: White rook moves like a knight
     EXPECT_FALSE(board.movePiece(0, 0, 2, 1));
+
+    // Invalid move: White rook jumps over a piece
+    board.setPieceAt(2, 0, "black_pawn");
+    EXPECT_FALSE(board.movePiece(0, 0, 4, 0));
+    EXPECT_EQ(board.getPieceAt(2, 0), "black_pawn");
+    EXPECT_EQ(board.getPieceAt(0, 0), "white_rook");
 }
 
 // Test black rook movement
@@ -298,15 +308,19 @@ TEST(BoardTest, BlackRookValidMoves) {
     Board board;
     board.initialize();
 
+    board.setPieceAt(5,0,"black_rook");
+
     // Valid move: Black rook moves vertically
-    EXPECT_TRUE(board.movePiece(7, 0, 3, 0));
+    EXPECT_TRUE(board.movePiece(5, 0, 3, 0));
     EXPECT_EQ(board.getPieceAt(3, 0), "black_rook");
-    EXPECT_EQ(board.getPieceAt(7, 0), "");
+    EXPECT_EQ(board.getPieceAt(5, 0), "");
+
+    board.setPieceAt(5,0,"black_rook");
 
     // Valid move: Black rook moves horizontally
-    EXPECT_TRUE(board.movePiece(3, 0, 3, 4));
-    EXPECT_EQ(board.getPieceAt(3, 4), "black_rook");
-    EXPECT_EQ(board.getPieceAt(3, 0), "");
+    EXPECT_TRUE(board.movePiece(5, 0, 5, 4));
+    EXPECT_EQ(board.getPieceAt(5, 4), "black_rook");
+    EXPECT_EQ(board.getPieceAt(5, 0), "");
 }
 
 // Test black rook invalid moves
@@ -319,6 +333,12 @@ TEST(BoardTest, BlackRookInvalidMoves) {
 
     // Invalid move: Black rook moves like a knight
     EXPECT_FALSE(board.movePiece(7, 0, 5, 1));
+
+    // Invalid move: Black rook jumps over a piece
+    board.setPieceAt(5, 0, "white_pawn");
+    EXPECT_FALSE(board.movePiece(7, 0, 3, 0));
+    EXPECT_EQ(board.getPieceAt(5, 0), "white_pawn");
+    EXPECT_EQ(board.getPieceAt(7, 0), "black_rook");
 }
 
 // Test white rook capture
@@ -326,13 +346,16 @@ TEST(BoardTest, WhiteRookCapture) {
     Board board;
     board.initialize();
 
+    // Set up a white rook for capturing
+    board.setPieceAt(2, 0, "white_rook");
+
     // Set up an opponent's piece for capturing
     board.setPieceAt(4, 0, "black_pawn");
 
     // Valid capture: White rook captures black pawn
-    EXPECT_TRUE(board.movePiece(0, 0, 4, 0));
+    EXPECT_TRUE(board.movePiece(2, 0, 4, 0));
     EXPECT_EQ(board.getPieceAt(4, 0), "white_rook");
-    EXPECT_EQ(board.getPieceAt(0, 0), "");
+    EXPECT_EQ(board.getPieceAt(2, 0), "");
 }
 
 // Test black rook capture
@@ -340,13 +363,166 @@ TEST(BoardTest, BlackRookCapture) {
     Board board;
     board.initialize();
 
+    // Set up a black rook for capturing
+    board.setPieceAt(5, 0, "black_rook");
+
     // Set up an opponent's piece for capturing
     board.setPieceAt(3, 0, "white_pawn");
 
     // Valid capture: Black rook captures white pawn
-    EXPECT_TRUE(board.movePiece(7, 0, 3, 0));
+    EXPECT_TRUE(board.movePiece(5, 0, 3, 0));
     EXPECT_EQ(board.getPieceAt(3, 0), "black_rook");
-    EXPECT_EQ(board.getPieceAt(7, 0), "");
+    EXPECT_EQ(board.getPieceAt(5, 0), "");
+}
+
+// Test white rook capturing own piece
+TEST(BoardTest, WhiteRookCaptureOwnPiece) {
+    Board board;
+    board.initialize();
+
+    // Set up a white rook for capturing
+    board.setPieceAt(2, 0, "white_rook");
+
+    // Set up a white piece for capturing
+    board.setPieceAt(4, 0, "white_pawn");
+
+    // Invalid capture: White rook captures white pawn
+    EXPECT_FALSE(board.movePiece(2, 0, 4, 0));
+    EXPECT_EQ(board.getPieceAt(2, 0), "white_rook");
+    EXPECT_EQ(board.getPieceAt(4, 0), "white_pawn");
+}
+
+// Test black rook capturing own piece
+TEST(BoardTest, BlackRookCaptureOwnPiece) {
+    Board board;
+    board.initialize();
+
+    // Set up a black rook for capturing
+    board.setPieceAt(5, 0, "black_rook");
+
+    // Set up a black piece for capturing
+    board.setPieceAt(3, 0, "black_pawn");
+
+    // Invalid capture: Black rook captures black pawn
+    EXPECT_FALSE(board.movePiece(5, 0, 3, 0));
+    EXPECT_EQ(board.getPieceAt(5, 0), "black_rook");
+    EXPECT_EQ(board.getPieceAt(3, 0), "black_pawn");
+}
+
+// Test white bishop valid moves
+TEST(BoardTest, WhiteBishopValidMoves) {
+    Board board;
+    board.initialize();
+
+    board.setPieceAt(2,2,"white_bishop");
+
+    // Valid move: Bishop moves diagonally
+    EXPECT_TRUE(board.movePiece(2, 2, 4, 4));
+    EXPECT_EQ(board.getPieceAt(4, 4), "white_bishop");
+    EXPECT_EQ(board.getPieceAt(2, 2), "");
+
+    board.setPieceAt(4,4,"white_bishop");
+
+    // Valid move: Bishop moves diagonally
+    EXPECT_TRUE(board.movePiece(4,4,2,2));
+    EXPECT_EQ(board.getPieceAt(2, 2), "white_bishop");
+    EXPECT_EQ(board.getPieceAt(4, 4), "");
+}
+
+// Test white bishop invalid moves
+TEST(BoardTest, WhiteBishopInvalidMoves) {
+    Board board;
+    board.initialize();
+
+    board.setPieceAt(2,2,"white_bishop");
+
+    // Invalid move: Bishop moves vertically
+    EXPECT_FALSE(board.movePiece(2, 2, 4, 2));
+
+    // Invalid move: Bishop moves horizontally
+    EXPECT_FALSE(board.movePiece(2, 2, 2, 4));
+
+    // Invalid move: Bishop jumps over a piece
+    board.setPieceAt(3, 3, "black_pawn");
+    EXPECT_FALSE(board.movePiece(2, 2, 4, 4));
+    EXPECT_EQ(board.getPieceAt(3, 3), "black_pawn");
+    EXPECT_EQ(board.getPieceAt(2, 2), "white_bishop");
+    EXPECT_EQ(board.getPieceAt(4,4), "");
+}
+
+// Test black bishop valid moves
+TEST(BoardTest, BlackBishopValidMoves) {
+    Board board;
+    board.initialize();
+
+    board.setPieceAt(5,0,"black_bishop");
+
+    // Valid move: Bishop moves diagonally
+    EXPECT_TRUE(board.movePiece(5, 0, 3, 2));
+    EXPECT_EQ(board.getPieceAt(3, 2), "black_bishop");
+    EXPECT_EQ(board.getPieceAt(5, 0), "");
+
+    board.setPieceAt(3,2,"black_bishop");
+
+    // Valid move: Bishop moves diagonally
+    EXPECT_TRUE(board.movePiece(3,2,5,0));
+    EXPECT_EQ(board.getPieceAt(5, 0), "black_bishop");
+    EXPECT_EQ(board.getPieceAt(3, 2), "");
+}
+
+// Test black bishop invalid moves
+TEST(BoardTest, BlackBishopInvalidMoves) {
+    Board board;
+    board.initialize();
+
+    board.setPieceAt(5,0,"black_bishop");
+
+    // Invalid move: Bishop moves vertically
+    EXPECT_FALSE(board.movePiece(5, 0, 3, 0));
+
+    // Invalid move: Bishop moves horizontally
+    EXPECT_FALSE(board.movePiece(5, 0, 5, 4));
+
+    // Invalid move: Bishop jumps over a piece
+    board.setPieceAt(4, 1, "white_pawn");
+    EXPECT_FALSE(board.movePiece(5, 0, 3, 2));
+    EXPECT_EQ(board.getPieceAt(4, 1), "white_pawn");
+    EXPECT_EQ(board.getPieceAt(5, 0), "black_bishop");
+    EXPECT_EQ(board.getPieceAt(3,2), "");
+}
+
+// Test white bishop capture
+TEST(BoardTest, WhiteBishopCapture) {
+    Board board;
+    board.initialize();
+
+    // Set up a white bishop for capturing
+    board.setPieceAt(2, 2, "white_bishop");
+
+    // Set up an opponent's piece for capturing
+    board.setPieceAt(4, 4, "black_pawn");
+
+    // Valid capture: White bishop captures black pawn
+    EXPECT_TRUE(board.movePiece(2, 2, 4, 4));
+    EXPECT_EQ(board.getPieceAt(4, 4), "white_bishop");
+    EXPECT_EQ(board.getPieceAt(2, 2), "");
+}
+
+// Test black bishop capture
+TEST(BoardTest, BlackBishopCapture) {
+    Board board;
+    board.initialize();
+
+    // Set up a black bishop for capturing
+    board.setPieceAt(5, 0, "black_bishop");
+
+    // Set up an opponent's piece for capturing
+    board.setPieceAt(3, 2, "white_pawn");
+
+    // Valid capture: Black bishop captures white pawn
+    EXPECT_TRUE(board.movePiece(5, 0, 3, 2));
+    EXPECT_EQ(board.getPieceAt(3, 2), "black_bishop");
+    EXPECT_EQ(board.getPieceAt(5, 0), "");
 }
 
 int main(int argc, char **argv) {

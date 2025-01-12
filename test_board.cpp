@@ -466,6 +466,98 @@ TEST_F(BoardTest, BlackQueenCapture) {
     expectEmptyAt(2,2);
 }
 
+TEST_F(BoardTest, WhiteKingValidMoves) {
+    board.setPieceAt(4, 4, "white_king");
+    expectMovePiece(4, 4, 4, 5, true);
+    expectPieceAt(4, 5, "white_king");
+    expectEmptyAt(4, 4);
+
+    expectMovePiece(4, 5, 5, 5, true);
+    expectPieceAt(5, 5, "white_king");
+    expectEmptyAt(4, 5);
+
+    expectMovePiece(5, 5, 5, 4, true);
+    expectPieceAt(5, 4, "white_king");
+    expectEmptyAt(5, 5);
+
+    expectMovePiece(5, 4, 4, 4, true);
+    expectPieceAt(4, 4, "white_king");
+    expectEmptyAt(5, 4);
+}
+
+TEST_F(BoardTest, WhiteKingInvalidMoves) {
+    board.setPieceAt(3, 3, "white_king");
+    expectMovePiece(3, 3, 5, 5, false);
+    expectPieceAt(3, 3, "white_king");
+    expectEmptyAt(5, 5);
+}
+
+TEST_F(BoardTest, WhiteKingCheck) {
+    board.setPieceAt(4, 4, "white_king");
+    board.setPieceAt(6, 4, "black_rook");
+    expectMovePiece(4, 4, 5, 4, false);
+    expectPieceAt(4, 4, "white_king");
+    expectPieceAt(6, 4, "black_rook");
+}
+
+TEST_F(BoardTest, WhiteKingCheckmate) {
+    board.setPieceAt(4, 4, "white_king");
+    board.setPieceAt(6, 4, "black_rook");
+    board.setPieceAt(6, 5, "black_rook");
+    board.setPieceAt(6, 3, "black_rook");
+    expectMovePiece(4, 4, 5, 4, false);
+    expectPieceAt(4, 4, "white_king");
+    expectPieceAt(6, 4, "black_rook");
+    expectPieceAt(6, 5, "black_rook");
+    expectPieceAt(6, 3, "black_rook");
+}
+
+TEST_F(BoardTest, BlackKingValidMoves) {
+    board.setPieceAt(4, 4, "black_king");
+    expectMovePiece(4, 4, 4, 5, true);
+    expectPieceAt(4, 5, "black_king");
+    expectEmptyAt(4, 4);
+
+    expectMovePiece(4, 5, 5, 5, true);
+    expectPieceAt(5, 5, "black_king");
+    expectEmptyAt(4, 5);
+
+    expectMovePiece(5, 5, 5, 4, true);
+    expectPieceAt(5, 4, "black_king");
+    expectEmptyAt(5, 5);
+
+    expectMovePiece(5, 4, 4, 4, true);
+    expectPieceAt(4, 4, "black_king");
+    expectEmptyAt(5, 4);
+}
+
+TEST_F(BoardTest, BlackKingInvalidMoves) {
+    board.setPieceAt(3, 3, "black_king");
+    expectMovePiece(3, 3, 5, 5, false);
+    expectPieceAt(3, 3, "black_king");
+    expectEmptyAt(5, 5);
+}
+
+TEST_F(BoardTest, BlackKingCheck) {
+    board.setPieceAt(4, 4, "black_king");
+    board.setPieceAt(2, 4, "white_rook");
+    expectMovePiece(4, 4, 3, 4, false);
+    expectPieceAt(4, 4, "black_king");
+    expectPieceAt(2, 4, "white_rook");
+}
+
+TEST_F(BoardTest, BlackKingCheckmate) {
+    board.setPieceAt(4, 4, "black_king");
+    board.setPieceAt(2, 4, "white_rook");
+    board.setPieceAt(2, 5, "white_rook");
+    board.setPieceAt(2, 3, "white_rook");
+    expectMovePiece(4, 4, 3, 4, false);
+    expectPieceAt(4, 4, "black_king");
+    expectPieceAt(2, 4, "white_rook");
+    expectPieceAt(2, 5, "white_rook");
+    expectPieceAt(2, 3, "white_rook");
+}
+
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

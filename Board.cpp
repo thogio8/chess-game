@@ -1,4 +1,5 @@
 #include <utility>
+#include <iostream>
 #include "include/Board.h"
 
 Board::Board() : grid(8, std::vector<std::string>(8, "")) {}
@@ -72,6 +73,9 @@ bool Board::movePiece(int startRow, int startCol, int endRow, int endCol) {
     }
     if (piece == "white_queen" || piece == "black_queen") {
         return moveQueen(startRow, startCol, endRow, endCol, piece);
+    }
+    if (piece == "white_king" || piece == "black_king") {
+        return moveKing(startRow, startCol, endRow, endCol, piece);
     }
     return false;
 }
@@ -150,6 +154,16 @@ bool Board::moveQueen(int startRow, int startCol, int endRow, int endCol, const 
     return true;
 }
 
+bool Board::moveKing(int startRow, int startCol, int endRow, int endCol, const std::string& piece) {
+    if (!isKingMoveValid(startRow, startCol, endRow, endCol)) return false;
+    std::string targetPiece = getPieceAt(endRow, endCol);
+    if (!targetPiece.empty() && targetPiece.substr(0, 5) == piece.substr(0, 5)) return false; // Prevent capturing own piece
+
+    grid[endRow][endCol] = piece;
+    grid[startRow][startCol] = "";
+    return true;
+}
+
 bool Board::isRookMoveValid(int startRow, int startCol, int endRow, int endCol) const {
     if (startRow == endRow) {
         int minCol = std::min(startCol, endCol);
@@ -186,4 +200,8 @@ bool Board::isKnightMoveValid(int startRow, int startCol, int endRow, int endCol
 
 bool Board::isQueenMoveValid(int startRow, int startCol, int endRow, int endCol) const {
     return isRookMoveValid(startRow, startCol, endRow, endCol) || isBishopMoveValid(startRow, startCol, endRow, endCol);
+}
+
+bool Board::isKingMoveValid(int startRow, int startCol, int endRow, int endCol) {
+    return abs(startRow - endRow) <= 1 && abs(startCol - endCol) <= 1;
 }

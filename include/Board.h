@@ -21,8 +21,13 @@ public:
     bool movePawn(int startRow, int startCol, int endRow, int endCol, const std::string &piece);
     bool moveRook(int startRow, int startCol, int endRow, int endCol, const std::string &piece);
     bool moveBishop(int startRow, int startCol, int endRow, int endCol, const std::string &piece);
+
+    bool moveKnight(int startRow, int startCol, int endRow, int endCol, const std::string &piece);
+
     [[nodiscard]] bool isRookMoveValid(int startRow, int startCol, int endRow, int endCol) const;
     [[nodiscard]] bool isBishopMoveValid(int startRow, int startCol, int endRow, int endCol) const;
+
+    static bool isKnightMoveValid(int startRow, int startCol, int endRow, int endCol);
 
 private:
     std::vector<std::vector<std::string>> grid;

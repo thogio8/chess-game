@@ -60,12 +60,16 @@ bool Board::movePiece(int startRow, int startCol, int endRow, int endCol) {
 
     if (piece == "white_pawn" || piece == "black_pawn") {
         return movePawn(startRow, startCol, endRow, endCol, piece);
-    } else if (piece == "white_rook" || piece == "black_rook") {
+    }
+    if (piece == "white_rook" || piece == "black_rook") {
         return moveRook(startRow, startCol, endRow, endCol, piece);
-    } else if (piece == "white_bishop" || piece == "black_bishop") {
+    }
+    if (piece == "white_bishop" || piece == "black_bishop") {
         return moveBishop(startRow, startCol, endRow, endCol, piece);
     }
-
+    if (piece == "white_knight" || piece == "black_knight") {
+        return moveKnight(startRow, startCol, endRow, endCol, piece);
+    }
     return false;
 }
 
@@ -123,6 +127,16 @@ bool Board::moveBishop(int startRow, int startCol, int endRow, int endCol, const
     return true;
 }
 
+bool Board::moveKnight(int startRow, int startCol, int endRow, int endCol, const std::string& piece) {
+    if (!isKnightMoveValid(startRow, startCol, endRow, endCol)) return false;
+    std::string targetPiece = getPieceAt(endRow, endCol);
+    if (!targetPiece.empty() && targetPiece.substr(0, 5) == piece.substr(0, 5)) return false; // Prevent capturing own piece
+
+    grid[endRow][endCol] = piece;
+    grid[startRow][startCol] = "";
+    return true;
+}
+
 bool Board::isRookMoveValid(int startRow, int startCol, int endRow, int endCol) const {
     if (startRow == endRow) {
         int minCol = std::min(startCol, endCol);
@@ -151,4 +165,8 @@ bool Board::isBishopMoveValid(int startRow, int startCol, int endRow, int endCol
         if (!grid[startRow + i * rowDir][startCol + i * colDir].empty()) return false;
     }
     return true;
+}
+
+bool Board::isKnightMoveValid(int startRow, int startCol, int endRow, int endCol) {
+    return (abs(startRow - endRow) == 2 && abs(startCol - endCol) == 1) || (abs(startRow - endRow) == 1 && abs(startCol - endCol) == 2);
 }

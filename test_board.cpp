@@ -321,6 +321,72 @@ TEST_F(BoardTest, BlackBishopCapture) {
     expectEmptyAt(5, 0);
 }
 
+TEST_F(BoardTest, WhiteKnightValidMoves) {
+    board.setPieceAt(2, 2, "white_knight");
+    expectMovePiece(2, 2, 4, 3, true);
+    expectPieceAt(4, 3, "white_knight");
+    expectEmptyAt(2, 2);
+
+    expectMovePiece(4, 3, 6, 2, true);
+    expectPieceAt(6, 2, "white_knight");
+    expectEmptyAt(4, 3);
+
+    expectMovePiece(6, 2, 4, 1, true);
+    expectPieceAt(4, 1, "white_knight");
+    expectEmptyAt(6, 2);
+
+    expectMovePiece(4,1, 2, 2, true);
+    expectPieceAt(2, 2, "white_knight");
+    expectEmptyAt(4, 1);
+}
+
+TEST_F(BoardTest, WhiteKnightCapture) {
+    board.setPieceAt(2, 2, "white_knight");
+    board.setPieceAt(4, 3, "black_pawn");
+    expectMovePiece(2, 2, 4, 3, true);
+    expectPieceAt(4, 3, "white_knight");
+    expectEmptyAt(2, 2);
+}
+
+TEST_F(BoardTest, WhiteKnightInvalidMoves) {
+    board.setPieceAt(2, 2, "white_knight");
+    expectMovePiece(2, 2, 4, 2, false);
+    expectMovePiece(2, 2, 2, 4, false);
+}
+
+TEST_F(BoardTest, BlackKnightValidMoves) {
+    board.setPieceAt(5, 0, "black_knight");
+    expectMovePiece(5, 0, 3, 1, true);
+    expectPieceAt(3, 1, "black_knight");
+    expectEmptyAt(5, 0);
+
+    expectMovePiece(3, 1, 1, 2, true);
+    expectPieceAt(1, 2, "black_knight");
+    expectEmptyAt(3, 1);
+
+    expectMovePiece(1, 2, 3, 3, true);
+    expectPieceAt(3, 3, "black_knight");
+    expectEmptyAt(1, 2);
+
+    expectMovePiece(3, 3, 5, 2, true);
+    expectPieceAt(5, 2, "black_knight");
+    expectEmptyAt(3, 3);
+}
+
+TEST_F(BoardTest, BlackKnightCapture) {
+    board.setPieceAt(5, 0, "black_knight");
+    board.setPieceAt(3, 1, "white_pawn");
+    expectMovePiece(5, 0, 3, 1, true);
+    expectPieceAt(3, 1, "black_knight");
+    expectEmptyAt(5, 0);
+}
+
+TEST_F(BoardTest, BlackKnightInvalidMoves) {
+    board.setPieceAt(5, 0, "black_knight");
+    expectMovePiece(5, 0, 3, 0, false);
+    expectMovePiece(5, 0, 5, 4, false);
+}
+
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

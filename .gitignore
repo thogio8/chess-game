@@ -36,3 +36,6 @@
 
 # Compiled files
 test_board
+
+# CMake files
+cmake-build-debug

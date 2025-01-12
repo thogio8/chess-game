@@ -109,6 +109,18 @@ bool Board::movePiece(int startRow, int startCol, int endRow, int endCol) {
             grid[startRow][startCol] = "";
             return true;
         }
+    } else if (piece == "white_rook") {
+        if ((endRow == startRow || endCol == startCol) && (endRow != startRow || endCol != startCol)) {
+            grid[endRow][endCol] = "white_rook";
+            grid[startRow][startCol] = "";
+            return true;
+        }
+    } else if (piece == "black_rook") {
+        if ((endRow == startRow || endCol == startCol) && (endRow != startRow || endCol != startCol)) {
+            grid[endRow][endCol] = "black_rook";
+            grid[startRow][startCol] = "";
+            return true;
+        }
     }
 
     return false;

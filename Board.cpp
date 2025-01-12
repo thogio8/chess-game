@@ -1,41 +1,42 @@
 #include <utility>
-
 #include "include/Board.h"
 
 Board::Board() : grid(8, std::vector<std::string>(8, "")) {}
 
 void Board::initialize() {
-    // Initialize pawns
+    initializeRow(1, "white_pawn");
+    initializeRow(6, "black_pawn");
+
+    initializePiece(0, 0, "white_rook");
+    initializePiece(0, 7, "white_rook");
+    initializePiece(7, 0, "black_rook");
+    initializePiece(7, 7, "black_rook");
+
+    initializePiece(0, 1, "white_knight");
+    initializePiece(0, 6, "white_knight");
+    initializePiece(7, 1, "black_knight");
+    initializePiece(7, 6, "black_knight");
+
+    initializePiece(0, 2, "white_bishop");
+    initializePiece(0, 5, "white_bishop");
+    initializePiece(7, 2, "black_bishop");
+    initializePiece(7, 5, "black_bishop");
+
+    initializePiece(0, 3, "white_queen");
+    initializePiece(7, 3, "black_queen");
+
+    initializePiece(0, 4, "white_king");
+    initializePiece(7, 4, "black_king");
+}
+
+void Board::initializeRow(int row, const std::string& piece) {
     for (int i = 0; i < 8; i++) {
-        grid[1][i] = "white_pawn";  // White pawns
-        grid[6][i] = "black_pawn";  // Black pawns
+        grid[row][i] = piece;
     }
+}
 
-    // Initialize rooks
-    grid[0][0] = "white_rook";
-    grid[0][7] = "white_rook";
-    grid[7][0] = "black_rook";
-    grid[7][7] = "black_rook";
-
-    // Initialize knights
-    grid[0][1] = "white_knight";
-    grid[0][6] = "white_knight";
-    grid[7][1] = "black_knight";
-    grid[7][6] = "black_knight";
-
-    // Initialize bishops
-    grid[0][2] = "white_bishop";
-    grid[0][5] = "white_bishop";
-    grid[7][2] = "black_bishop";
-    grid[7][5] = "black_bishop";
-
-    // Initialize queens
-    grid[0][3] = "white_queen";
-    grid[7][3] = "black_queen";
-
-    // Initialize kings
-    grid[0][4] = "white_king";
-    grid[7][4] = "black_king";
+void Board::initializePiece(int row, int col, const std::string& piece) {
+    grid[row][col] = piece;
 }
 
 int Board::getRows() const {
@@ -57,79 +58,69 @@ void Board::setPieceAt(int row, int col, std::string piece) {
 bool Board::movePiece(int startRow, int startCol, int endRow, int endCol) {
     std::string piece = getPieceAt(startRow, startCol);
 
-    if (piece == "white_pawn") {
-        if (startRow == 1 && endRow == 3 && startCol == endCol && grid[2][endCol].empty() && grid[3][endCol].empty()) {
-            grid[endRow][endCol] = "white_pawn";
-            grid[startRow][startCol] = "";
-            return true;
-        }
-        if (endRow == startRow + 1 && startCol == endCol && grid[endRow][endCol].empty()) {
-            grid[endRow][endCol] = "white_pawn";
-            grid[startRow][startCol] = "";
-            return true;
-        }
-        if (endRow == startRow + 1 && (endCol == startCol + 1 || endCol == startCol - 1) && grid[endRow][endCol].find("black") != std::string::npos) {
-            grid[endRow][endCol] = "white_pawn";
-            grid[startRow][startCol] = "";
-            return true;
-        }
-        if (startRow == 4 && endRow == 5 && (endCol == startCol + 1 || endCol == startCol - 1) && grid[4][endCol].find("black") != std::string::npos) {
-            grid[endRow][endCol] = "white_pawn";
-            grid[startRow][endCol] = "";
-            grid[startRow][startCol] = "";
-            return true;
-        }
-        if (startRow == 6 && endRow == 7 && startCol == endCol) {
-            grid[endRow][endCol] = "white_queen";
-            grid[startRow][startCol] = "";
-            return true;
-        }
-    }else if (piece == "black_pawn") {
-        if (startRow == 6 && endRow == 4 && startCol == endCol && grid[5][endCol].empty() && grid[4][endCol].empty()) {
-            grid[endRow][endCol] = "black_pawn";
-            grid[startRow][startCol] = "";
-            return true;
-        }
-        if (endRow == startRow - 1 && startCol == endCol && grid[endRow][endCol].empty()) {
-            grid[endRow][endCol] = "black_pawn";
-            grid[startRow][startCol] = "";
-            return true;
-        }
-        if (endRow == startRow - 1 && (endCol == startCol + 1 || endCol == startCol - 1) && grid[endRow][endCol].find("white") != std::string::npos) {
-            grid[endRow][endCol] = "black_pawn";
-            grid[startRow][startCol] = "";
-            return true;
-        }
-        if (startRow == 3 && endRow == 2 && (endCol == startCol + 1 || endCol == startCol - 1) && grid[3][endCol].find("white") != std::string::npos) {
-            grid[endRow][endCol] = "black_pawn";
-            grid[startRow][endCol] = "";
-            grid[startRow][startCol] = "";
-            return true;
-        }
-        if (startRow == 1 && endRow == 0 && startCol == endCol) {
-            grid[endRow][endCol] = "black_queen";
-            grid[startRow][startCol] = "";
-            return true;
-        }
-    }else if (piece == "white_rook" || piece == "black_rook") {
-        if (!isRookMoveValid(startRow, startCol, endRow, endCol)) return false;
-        std::string targetPiece = getPieceAt(endRow, endCol);
-        if (!targetPiece.empty() && targetPiece.substr(0, 5) == piece.substr(0, 5)) return false; // Prevent capturing own piece
+    if (piece == "white_pawn" || piece == "black_pawn") {
+        return movePawn(startRow, startCol, endRow, endCol, piece);
+    } else if (piece == "white_rook" || piece == "black_rook") {
+        return moveRook(startRow, startCol, endRow, endCol, piece);
+    } else if (piece == "white_bishop" || piece == "black_bishop") {
+        return moveBishop(startRow, startCol, endRow, endCol, piece);
+    }
 
+    return false;
+}
+
+bool Board::movePawn(int startRow, int startCol, int endRow, int endCol, const std::string& piece) {
+    int direction = (piece == "white_pawn") ? 1 : -1;
+    std::string opponent = (piece == "white_pawn") ? "black" : "white";
+
+    if (startRow + direction == endRow && startCol == endCol && grid[endRow][endCol].empty()) {
         grid[endRow][endCol] = piece;
         grid[startRow][startCol] = "";
         return true;
-    }else if (piece == "white_bishop" || piece == "black_bishop") {
-        if (!isBishopMoveValid(startRow, startCol, endRow, endCol)) return false;
-        std::string targetPiece = getPieceAt(endRow, endCol);
-        if (!targetPiece.empty() && targetPiece.substr(0, 5) == piece.substr(0, 5)) return false; // Prevent capturing own piece
-
+    }
+    if (startRow + 2 * direction == endRow && startCol == endCol && grid[startRow + direction][endCol].empty() && grid[endRow][endCol].empty()) {
         grid[endRow][endCol] = piece;
+        grid[startRow][startCol] = "";
+        return true;
+    }
+    if (startRow + direction == endRow && (endCol == startCol + 1 || endCol == startCol - 1) && grid[endRow][endCol].find(opponent) != std::string::npos) {
+        grid[endRow][endCol] = piece;
+        grid[startRow][startCol] = "";
+        return true;
+    }
+    if (startRow + direction == endRow && (endCol == startCol + 1 || endCol == startCol - 1) && grid[startRow][endCol] == opponent + "_pawn" && grid[endRow][endCol].empty()) {
+        grid[endRow][endCol] = piece;
+        grid[startRow][startCol] = "";
+        grid[startRow][endCol] = "";
+        return true;
+    }
+    if (startRow == (piece == "white_pawn" ? 6 : 1) && endRow == (piece == "white_pawn" ? 7 : 0) && startCol == endCol) {
+        grid[endRow][endCol] = (piece == "white_pawn") ? "white_queen" : "black_queen";
         grid[startRow][startCol] = "";
         return true;
     }
 
     return false;
+}
+
+bool Board::moveRook(int startRow, int startCol, int endRow, int endCol, const std::string& piece) {
+    if (!isRookMoveValid(startRow, startCol, endRow, endCol)) return false;
+    std::string targetPiece = getPieceAt(endRow, endCol);
+    if (!targetPiece.empty() && targetPiece.substr(0, 5) == piece.substr(0, 5)) return false; // Prevent capturing own piece
+
+    grid[endRow][endCol] = piece;
+    grid[startRow][startCol] = "";
+    return true;
+}
+
+bool Board::moveBishop(int startRow, int startCol, int endRow, int endCol, const std::string& piece) {
+    if (!isBishopMoveValid(startRow, startCol, endRow, endCol)) return false;
+    std::string targetPiece = getPieceAt(endRow, endCol);
+    if (!targetPiece.empty() && targetPiece.substr(0, 5) == piece.substr(0, 5)) return false; // Prevent capturing own piece
+
+    grid[endRow][endCol] = piece;
+    grid[startRow][startCol] = "";
+    return true;
 }
 
 bool Board::isRookMoveValid(int startRow, int startCol, int endRow, int endCol) const {
@@ -160,5 +151,4 @@ bool Board::isBishopMoveValid(int startRow, int startCol, int endRow, int endCol
         if (!grid[startRow + i * rowDir][startCol + i * colDir].empty()) return false;
     }
     return true;
-
 }

@@ -265,6 +265,91 @@ TEST(BoardTest, BlackPawnPromotion) {
     EXPECT_EQ(board.getPieceAt(1, 0), "");
 }
 
+// Test white rook movement
+TEST(BoardTest, WhiteRookValidMoves) {
+    Board board;
+    board.initialize();
+
+    // Valid move: White rook moves vertically
+    EXPECT_TRUE(board.movePiece(0, 0, 4, 0));
+    EXPECT_EQ(board.getPieceAt(4, 0), "white_rook");
+    EXPECT_EQ(board.getPieceAt(0, 0), "");
+
+    // Valid move: White rook moves horizontally
+    EXPECT_TRUE(board.movePiece(4, 0, 4, 4));
+    EXPECT_EQ(board.getPieceAt(4, 4), "white_rook");
+    EXPECT_EQ(board.getPieceAt(4, 0), "");
+}
+
+// Test white rook invalid moves
+TEST(BoardTest, WhiteRookInvalidMoves) {
+    Board board;
+    board.initialize();
+
+    // Invalid move: White rook moves diagonally
+    EXPECT_FALSE(board.movePiece(0, 0, 1, 1));
+
+    // Invalid move: White rook moves like a knight
+    EXPECT_FALSE(board.movePiece(0, 0, 2, 1));
+}
+
+// Test black rook movement
+TEST(BoardTest, BlackRookValidMoves) {
+    Board board;
+    board.initialize();
+
+    // Valid move: Black rook moves vertically
+    EXPECT_TRUE(board.movePiece(7, 0, 3, 0));
+    EXPECT_EQ(board.getPieceAt(3, 0), "black_rook");
+    EXPECT_EQ(board.getPieceAt(7, 0), "");
+
+    // Valid move: Black rook moves horizontally
+    EXPECT_TRUE(board.movePiece(3, 0, 3, 4));
+    EXPECT_EQ(board.getPieceAt(3, 4), "black_rook");
+    EXPECT_EQ(board.getPieceAt(3, 0), "");
+}
+
+// Test black rook invalid moves
+TEST(BoardTest, BlackRookInvalidMoves) {
+    Board board;
+    board.initialize();
+
+    // Invalid move: Black rook moves diagonally
+    EXPECT_FALSE(board.movePiece(7, 0, 6, 1));
+
+    // Invalid move: Black rook moves like a knight
+    EXPECT_FALSE(board.movePiece(7, 0, 5, 1));
+}
+
+// Test white rook capture
+TEST(BoardTest, WhiteRookCapture) {
+    Board board;
+    board.initialize();
+
+    // Set up an opponent's piece for capturing
+    board.setPieceAt(4, 0, "black_pawn");
+
+    // Valid capture: White rook captures black pawn
+    EXPECT_TRUE(board.movePiece(0, 0, 4, 0));
+    EXPECT_EQ(board.getPieceAt(4, 0), "white_rook");
+    EXPECT_EQ(board.getPieceAt(0, 0), "");
+}
+
+// Test black rook capture
+TEST(BoardTest, BlackRookCapture) {
+    Board board;
+    board.initialize();
+
+    // Set up an opponent's piece for capturing
+    board.setPieceAt(3, 0, "white_pawn");
+
+    // Valid capture: Black rook captures white pawn
+    EXPECT_TRUE(board.movePiece(7, 0, 3, 0));
+    EXPECT_EQ(board.getPieceAt(3, 0), "black_rook");
+    EXPECT_EQ(board.getPieceAt(7, 0), "");
+    EXPECT_EQ(board.getPieceAt(3, 4), "");
+}
+
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

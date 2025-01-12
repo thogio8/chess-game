@@ -387,6 +387,85 @@ TEST_F(BoardTest, BlackKnightInvalidMoves) {
     expectMovePiece(5, 0, 5, 4, false);
 }
 
+TEST_F(BoardTest, WhiteQueenValidMoves) {
+    board.setPieceAt(2, 2, "white_queen");
+    expectMovePiece(2, 2, 4, 2, true);
+    expectPieceAt(4, 2, "white_queen");
+    expectEmptyAt(2, 2);
+
+    board.setPieceAt(4, 2, "white_queen");
+    expectMovePiece(4, 2, 2, 2, true);
+    expectPieceAt(2, 2, "white_queen");
+    expectEmptyAt(4, 2);
+
+    board.setPieceAt(2, 2, "white_queen");
+    expectMovePiece(2, 2, 4, 4, true);
+    expectPieceAt(4, 4, "white_queen");
+    expectEmptyAt(2, 2);
+
+    board.setPieceAt(4, 4, "white_queen");
+    expectMovePiece(4, 4, 6, 6, true);
+    expectPieceAt(6, 6, "white_queen");
+    expectEmptyAt(4, 4);
+
+    board.setPieceAt(6, 6, "white_queen");
+    expectMovePiece(6, 6, 4, 4, true);
+    expectPieceAt(4, 4, "white_queen");
+    expectEmptyAt(6, 6);
+
+    board.setPieceAt(4, 4, "white_queen");
+    expectMovePiece(4, 4, 4, 0, true);
+    expectPieceAt(4, 0, "white_queen");
+    expectEmptyAt(4, 4);
+}
+
+TEST_F(BoardTest, WhiteQueenInvalidMoves) {
+    board.setPieceAt(4,4,"white_queen");
+    expectMovePiece(4,4,2,1,false);
+    expectPieceAt(4,4,"white_queen");
+    expectEmptyAt(2,1);
+}
+
+TEST_F(BoardTest, WhiteQueenCapture) {
+    board.setPieceAt(4,4,"white_queen");
+    board.setPieceAt(6,6,"black_pawn");
+    expectMovePiece(4,4,6,6,true);
+    expectPieceAt(6,6,"white_queen");
+    expectEmptyAt(4,4);
+}
+
+TEST_F(BoardTest, BlackQueenValidMoves) {
+    board.setPieceAt(2,2,"black_queen");
+    expectMovePiece(2, 2, 4, 2, true);
+    expectPieceAt(4, 2, "black_queen");
+    expectEmptyAt(2, 2);
+
+    board.setPieceAt(4,2,"black_queen");
+    expectMovePiece(4, 2, 2, 2, true);
+    expectPieceAt(2, 2, "black_queen");
+    expectEmptyAt(4, 2);
+
+    board.setPieceAt(2,2,"black_queen");
+    expectMovePiece(2, 2, 3, 2, true);
+    expectPieceAt(3, 2, "black_queen");
+    expectEmptyAt(2, 2);
+}
+
+TEST_F(BoardTest, BlackQueenInvalidMoves) {
+    board.setPieceAt(2,2,"black_queen");
+    expectMovePiece(2,2,5,1,false);
+    expectPieceAt(2,2,"black_queen");
+    expectEmptyAt(5,1);
+}
+
+TEST_F(BoardTest, BlackQueenCapture) {
+    board.setPieceAt(2,2,"black_queen");
+    board.setPieceAt(4,4,"white_pawn");
+    expectMovePiece(2,2,4,4,true);
+    expectPieceAt(4,4,"black_queen");
+    expectEmptyAt(2,2);
+}
+
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

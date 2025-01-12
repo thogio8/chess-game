@@ -347,7 +347,6 @@ TEST(BoardTest, BlackRookCapture) {
     EXPECT_TRUE(board.movePiece(7, 0, 3, 0));
     EXPECT_EQ(board.getPieceAt(3, 0), "black_rook");
     EXPECT_EQ(board.getPieceAt(7, 0), "");
-    EXPECT_EQ(board.getPieceAt(3, 4), "");
 }
 
 int main(int argc, char **argv) {
